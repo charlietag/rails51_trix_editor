@@ -28,7 +28,8 @@ Things you may want to cover:
         * members.js
       * stylesheets/
         * application.css
-    * app/models/picture.rb
+    * app/models/
+      * picture.rb
     * app/views/members/
       * _form.html.erb
 
