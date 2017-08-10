@@ -1,0 +1,59 @@
+# Place all the behaviors and hooks related to the matching controller here.
+# All this logic will automatically be available in application.js.
+# You can use CoffeeScript in this file: http://coffeescript.org/
+(->
+  host = undefined
+  uploadAttachment = undefined
+  #-----------------Upload Add File--------------------
+  document.addEventListener 'trix-attachment-add', (event) ->
+    attachment = undefined
+    attachment = event.attachment
+    if attachment.file
+      return uploadAttachment(attachment)
+    return
+  #-----------------Remove File--------------------
+  #-----------------Functions--------------------
+  #host = "https://d13txem1unpe48.cloudfront.net/";
+  host = '/pictures.json'
+  # Route: POST /pictures(.:format) pictures#create
+  #-------Add File-----
+
+  uploadAttachment = (attachment) ->
+    file = undefined
+    form = undefined
+    xhr = undefined
+    file = attachment.file
+    form = new FormData
+    form.append 'Content-Type', file.type
+    #form.append("file", file);
+    form.append 'picture[path]', file
+    # Form element for pictures/_form
+    xhr = new XMLHttpRequest
+    xhr.responseType = 'json'
+    # Parse response json into xhr object
+    xhr.open 'POST', host, true
+    xhr.setRequestHeader 'X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')
+    # Add CSRF-Token into formData
+
+    xhr.upload.onprogress = (event) ->
+      progress = undefined
+      progress = event.loaded / event.total * 100
+      attachment.setUploadProgress progress
+
+    xhr.onload = ->
+      href = undefined
+      url = undefined
+      if xhr.status == 201
+        url = href = xhr.response.path.url
+        #console.log(url);
+        return attachment.setAttributes(
+          url: url
+          href: href)
+      return
+
+    xhr.send form
+
+  #-------Remove File-----
+  #-----------------Functions end--------------------
+  return
+).call this

@@ -1,0 +1,10 @@
+{
+  "name": "trix_editor",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "font-awesome": "^4.7.0",
+    "jquery": "^3.2.1",
+    "trix": "^0.10.2"
+  }
+}
