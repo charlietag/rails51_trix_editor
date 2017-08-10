@@ -1,5 +1,5 @@
 (function() {
-  var host, uploadAttachment, file_id;
+  var host, uploadAttachment;
 
   //-----------------Upload Add File--------------------
   document.addEventListener("trix-attachment-add", function(event) {
@@ -11,11 +11,10 @@
   });
 
   document.addEventListener("trix-attachment-remove", function(event) {
-    var attachment;
-    attachment = event.attachment;
-    if (attachment.file) {
-      return removeAttachment(attachment);
-    }
+    //console.log(event);
+    var file_id;
+    file_id = event.attachment.attachment.attributes.values.id;
+    return removeAttachment(file_id);
   });
 
   //-----------------Remove File--------------------
@@ -45,12 +44,13 @@
       return attachment.setUploadProgress(progress);
     };
     xhr.onload = function() {
-      var href, url;
+      var id, href, url;
       if (xhr.status === 201) {
         url = href = xhr.response.path.url;
-        file_id = xhr.response.id;
+        id = xhr.response.id;
         //console.log(url);
         return attachment.setAttributes({
+          id: id,
           url: url,
           href: href
         });
@@ -59,7 +59,7 @@
     return xhr.send(form);
   };
   //-------Remove File-----
-  removeAttachment = function(attachment) {
+  removeAttachment = function(file_id) {
     //console.log(file_id);
     return $.ajax({
       headers: { 'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
